@@ -1,0 +1,117 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>Module erltunnel</title>
+<link rel="stylesheet" type="text/css" href="stylesheet.css" title="EDoc">
+</head>
+<body bgcolor="white">
+<div class="navbar"><a name="#navbar_top"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<hr>
+
+<h1>Module erltunnel</h1>
+<ul class="index"><li><a href="#description">Description</a></li><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>HTTP tunnel client and server for tunneling TCP connections over HTTP.
+<p>Copyright © 2007</p>
+
+<p><b>Version:</b> 0.1</p>
+<p><b>Behaviours:</b> <a href="gen_server.html"><tt>gen_server</tt></a>.</p>
+<p><b>Authors:</b> Christoph Dornheim.</p>
+
+<h2><a name="description">Description</a></h2><p>HTTP tunnel client and server for tunneling TCP connections over HTTP</p>
+  
+   Erltunnel allows client applications to establish a virtual TCP connection
+   to a remote server when directly connecting the server is not allowed due to
+   a restrictive firewall.
+   The tunnel client runs behind the firewall and is accessed by the client application
+   whereas the tunnel server must reside on the internet to be able to access the server
+   application. The tunnel server must be accessible from the tunnel client and must
+   not be blocked by an intermediate proxy.
+   If a virtual connection between the client and server application is established
+   via the tunnel client and server, all application data is transported as HTTP requests
+   and responses between the tunnel client and server.
+   The tunnel client sends data received from the client as an HTTP request to the
+   tunnel server which relays the data to the server application.
+   Conversely, the tunnel server sends data received from the server application as
+   the related HTTP response back to the tunnel client which relays the data to the
+   client application. Thus, tunneling a bidirectional TCP data stream is performed
+   by periodic HTTP request/response cycles.
+<h2><a name="types">Data Types</a></h2>
+
+<h3 class="typedecl"><a name="type-addr">addr()</a></h3>
+<p><tt>addr() = {<a href="#type-ip">ip()</a>, integer()}</tt></p>
+<p>Address of a connection endpoint defined by host and port number
+ </p>
+
+<h3 class="typedecl"><a name="type-ip">ip()</a></h3>
+<p><tt>ip() = string() | {integer(), integer(), integer(), integer()}</tt></p>
+<p>Name or IP of an host, e.g. "www.erlang.org", "193.180.168.20", {193,180,168,20}
+ </p>
+
+<h3 class="typedecl"><a name="type-logType">logType()</a></h3>
+<p><tt>logType() = info | warn | error</tt></p>
+<p>Logging level</p>
+
+<h3 class="typedecl"><a name="type-proxyOpt">proxyOpt()</a></h3>
+<p><tt>proxyOpt() = noProxy | <a href="#type-addr">addr()</a> | {<a href="#type-addr">addr()</a>, {string(), string()}}</tt></p>
+<p>Specification of an optional proxy by address and by user name and password
+  if necessary for authentication
+ </p>
+
+<h2><a name="index">Function Index</a></h2>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#list-1">list/1</a></td><td>Prints a list of all active tunnel connections of the specified client or server.</td></tr>
+<tr><td valign="top"><a href="#logtype-2">logtype/2</a></td><td>Sets the logging type.</td></tr>
+<tr><td valign="top"><a href="#start_client-4">start_client/4</a></td><td>Starts a tunnel client locally registered as Name at the local port ListenPort.</td></tr>
+<tr><td valign="top"><a href="#start_link_client-4">start_link_client/4</a></td><td>Same as start_client where the gen_server is linked to the calling process.</td></tr>
+<tr><td valign="top"><a href="#start_link_server-2">start_link_server/2</a></td><td>Same as start_server/2 where the gen_server is linked to the calling process.</td></tr>
+<tr><td valign="top"><a href="#start_server-2">start_server/2</a></td><td>Starts a tunnel server locally registered as Name at the local port ListenPort.</td></tr>
+<tr><td valign="top"><a href="#stop-1">stop/1</a></td><td>Stops the specified client or server.</td></tr>
+</table>
+
+<h2><a name="functions">Function Details</a></h2>
+
+<h3 class="function"><a name="list-1">list/1</a></h3>
+<div class="spec">
+<p><tt>list(Name::atom()) -&gt; ok</tt></p>
+</div><p>Prints a list of all active tunnel connections of the specified client or server.</p>
+
+<h3 class="function"><a name="logtype-2">logtype/2</a></h3>
+<div class="spec">
+<p><tt>logtype(Name::atom(), Type::<a href="#type-logType">logType()</a>) -&gt; ok</tt></p>
+</div><p>Sets the logging type. Any log information of a type equal or higher than Type
+       will be printed at standard IO.</p>
+
+<h3 class="function"><a name="start_client-4">start_client/4</a></h3>
+<div class="spec">
+<p><tt>start_client(Name::atom(), ListenPort::integer(), ServerAddr::<a href="#type-addr">addr()</a>, ProxyOpt::<a href="#type-proxyOpt">proxyOpt()</a>) -&gt; Result::term()</tt></p>
+</div><p>Starts a tunnel client locally registered as Name at the local port ListenPort.
+       The tunnel server address is specified by ServerAddr and an optional
+       proxy server by ProxyOpt.
+       For the return value see gen_server:start/4.</p>
+
+<h3 class="function"><a name="start_link_client-4">start_link_client/4</a></h3>
+<div class="spec">
+<p><tt>start_link_client(Name::atom(), ListenPort::integer(), ServerAddr::<a href="#type-addr">addr()</a>, ProxyOpt::<a href="#type-proxyOpt">proxyOpt()</a>) -&gt; Result::term()</tt></p>
+</div><p>Same as start_client where the gen_server is linked to the calling process.
+       For the return value see gen_server:start_link/4.</p>
+
+<h3 class="function"><a name="start_link_server-2">start_link_server/2</a></h3>
+<div class="spec">
+<p><tt>start_link_server(Name::atom(), ListenPort::integer()) -&gt; Result::term()</tt></p>
+</div><p>Same as start_server/2 where the gen_server is linked to the calling process.
+       For the return value see gen_server:start_link/4.</p>
+
+<h3 class="function"><a name="start_server-2">start_server/2</a></h3>
+<div class="spec">
+<p><tt>start_server(Name::atom(), ListenPort::integer()) -&gt; Result::term()</tt></p>
+</div><p>Starts a tunnel server locally registered as Name at the local port ListenPort.
+       For the return value see gen_server:start/4.</p>
+
+<h3 class="function"><a name="stop-1">stop/1</a></h3>
+<div class="spec">
+<p><tt>stop(Name::atom()) -&gt; stopped_by_user</tt></p>
+</div><p>Stops the specified client or server.</p>
+<hr>
+
+<div class="navbar"><a name="#navbar_bottom"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<p><i>Generated by EDoc, Dec 2 2007, 17:34:16.</i></p>
+</body>
+</html>
